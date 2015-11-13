@@ -1,0 +1,143 @@
+<html>
+	<head>
+		<script src="https://s.brightspace.com/lib/jquery/1.11.0/jquery.js"></script>
+	</head>
+	<body>
+		<a href="javascript:void(0);" id="openFrameDialog">Open Frame Dialog</a>
+		<span id="divDialogOptions">
+			<a href="javascript:void(0);" id="openDivDialog">Open Div Dialog</a>
+			<label>
+				<input type="checkbox" id="randomizeIds" value="randomize IDs" />
+				Randomize field IDs
+		</span>
+
+		<fieldset>
+			<label>
+				Main-page input field
+				<input type="text" id="mainPageInput" />
+			</label>
+			<label>
+				Input without an ID
+				<input type="text" />
+			</label>
+		</fieldset>
+	</body>
+
+	<script type="text/javascript">
+		$(document).ready(init);
+
+		function init() {
+			$('#openFrameDialog').click(function() {
+				var iframe = $('<iframe src="contents.html" id="frame"></iframe>');
+				openDialog( iframe );
+			} );
+
+			$('#openDivDialog').click(function() {
+				openDivDialog();
+			} );
+		}
+
+		var dialogOpen = false;
+		function openDialog( contents ) {
+			if( dialogOpen ) return;
+
+			dialogOpen = true;
+			var dialog = $( '<div id="dialog"></div>' );
+
+			var header = $('<div id="header"></div>'),
+				inner = $('<div id="innerContainer"></div>'),
+				closeButton = $('<a href="javascript:void(0);" id="closeButton">X</a>');
+
+			closeButton.click( closeDialog );
+
+			dialog.append( header.append( closeButton ) )
+				.append( inner.append( contents ) );
+
+			$('body').append( dialog );
+		}
+
+		function closeDialog() {
+			$('#dialog').remove();
+			dialogOpen = false;
+		}
+
+		function openDivDialog() {
+			var contents = $('<div id="divContents"></div>'),
+				fieldSet = $('<fieldset></fieldset>');
+
+			var randomize = $('#randomizeIds').is(':checked');
+			var fields = randomize
+				? [Math.random(), Math.random(), Math.random(), Math.random(), Math.random()]
+				: ['first','second','third','fourth','fifth'];
+			for( var i in fields ) {
+				var label = $('<label></label>')		
+					.text( 'Field the ' + fields[i] )
+					.append(
+						$('<input type="text" />')
+							.attr('id', fields[i] + 'Field' )
+					);
+
+				fieldSet.append( label );
+			}
+
+			fieldSet.append(
+					$('<label>Input with no ID<input type="text" /></label>')
+				);
+
+			contents.append( fieldSet );
+			openDialog( contents );
+		}
+	</script>
+	<style type="text/css">
+		body {
+			width: 500px;
+		}
+
+		#divDialogOptions {
+			float: right;
+		}
+
+		#dialog {
+			margin-top: 75px;
+			border: 4px double darkgrey;
+			width: 400px;
+			height: 400px;
+			box-sizing: content-box;
+			margin-left: auto;
+			margin-right: auto;
+		}
+
+		#header {
+			height: 50px;
+			border-bottom: 2px solid black;
+			background-color: #DDD;
+		}
+
+		#closeButton {
+			display: block;
+			width: 50;
+			height: 50;
+			float: right;
+			border: thin solid black;
+			text-align: center;
+			vertical-align: middle;
+			background-color: #DDD;
+		}
+
+		#frame {
+			display: block;
+			width: 100%;
+			height: 100%;
+			border: none;
+		}
+
+		label {
+			display: block;
+			height: 30px;
+		}
+
+		input {
+			float: right;
+		}
+	</style>
+</html>
